@@ -182,7 +182,7 @@ new SlashCommandBuilder()
 
 new SlashCommandBuilder()
   .setName("seebday")
-  .setDescription("View all saved birthdays")
+  .setDescription("View all saved birthdays"),
 
 new SlashCommandBuilder()
 .setName("addstaff")
