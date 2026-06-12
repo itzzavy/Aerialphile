@@ -1,216 +1,451 @@
 const {
-    EmbedBuilder,
-    PermissionFlagsBits
+EmbedBuilder,
+PermissionFlagsBits
 } = require("discord.js");
 
 module.exports = (client) => {
 
-    client.on("interactionCreate", async interaction => {
+```
+// =========================
+// MESSAGE TRACKING
+// =========================
 
-        if (!interaction.isChatInputCommand()) return;
+client.on("messageCreate", async (message) => {
 
-        // ADD STAFF
+    if (!message.guild) return;
+    if (message.author.bot) return;
 
-        if (interaction.commandName === "addstaff") {
+    const staff = await client.staffDB.findOne({
+        guildId: message.guild.id,
+        userId: message.author.id
+    });
 
-            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-                return interaction.reply({
-                    content: "❌ Administrator only.",
-                    ephemeral: true
-                });
+    if (!staff) return;
+
+    await client.staffDB.updateOne(
+        {
+            guildId: message.guild.id,
+            userId: message.author.id
+        },
+        {
+            $inc: {
+                messagesSent: 1,
+                activityScore: 1
+            },
+            $set: {
+                lastMessageAt: new Date(),
+                lastActiveAt: new Date()
             }
+        }
+    );
+});
 
-            const user = interaction.options.getUser("user");
-            const category = interaction.options.getString("category");
+// =========================
+// SLASH COMMANDS
+// =========================
 
-            const existing = await client.staffDB.findOne({
-                guildId: interaction.guild.id,
-                userId: user.id
-            });
+client.on("interactionCreate", async (interaction) => {
 
-            if (existing) {
-                return interaction.reply({
-                    content: "❌ User is already staff.",
-                    ephemeral: true
-                });
-            }
+    if (!interaction.isChatInputCommand()) return;
 
-            await client.staffDB.insertOne({
-                guildId: interaction.guild.id,
-                userId: user.id,
-                username: user.tag,
+    const commands = [
+        "addstaff",
+        "removestaff",
+        "stafflist",
+        "staffstats",
+        "staffprofile",
+        "staffactivity",
+        "staffleaderboard"
+    ];
 
-                category,
+    if (!commands.includes(interaction.commandName)) return;
 
-                addedBy: interaction.user.id,
-                joinedAt: new Date(),
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+        return interaction.reply({
+            content: "❌ Only administrators can use this command.",
+            ephemeral: true
+        });
+    }
 
-                warningsIssued: 0,
-                messagesSent: 0,
-                voiceMinutes: 0
-            });
+    // =========================
+    // ADD STAFF
+    // =========================
 
+    if (interaction.commandName === "addstaff") {
+
+        const user = interaction.options.getUser("user");
+        const category = interaction.options.getString("category");
+
+        const existing = await client.staffDB.findOne({
+            guildId: interaction.guild.id,
+            userId: user.id
+        });
+
+        if (existing) {
             return interaction.reply({
-                content: `✅ Added **${user.tag}** to **${category}**.`,
+                content: "❌ This user is already registered as staff.",
                 ephemeral: true
             });
         }
 
-        // REMOVE STAFF
+        await client.staffDB.insertOne({
+            guildId: interaction.guild.id,
+            userId: user.id,
+            username: user.tag,
 
-        if (interaction.commandName === "removestaff") {
+            category,
 
-            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-                return interaction.reply({
-                    content: "❌ Administrator only.",
-                    ephemeral: true
-                });
-            }
+            addedBy: interaction.user.id,
+            joinedAt: new Date(),
 
-            const user = interaction.options.getUser("user");
+            messagesSent: 0,
+            warningsIssued: 0,
 
-            await client.staffDB.deleteOne({
-                guildId: interaction.guild.id,
-                userId: user.id
-            });
+            activityScore: 0,
 
+            lastMessageAt: null,
+            lastActiveAt: null
+        });
+
+        return interaction.reply({
+            content: `✅ Added **${user.tag}** to **${category}**.`,
+            ephemeral: true
+        });
+    }
+
+    // =========================
+    // REMOVE STAFF
+    // =========================
+
+    if (interaction.commandName === "removestaff") {
+
+        const user = interaction.options.getUser("user");
+
+        const staff = await client.staffDB.findOne({
+            guildId: interaction.guild.id,
+            userId: user.id
+        });
+
+        if (!staff) {
             return interaction.reply({
-                content: `✅ Removed **${user.tag}** from staff.`,
+                content: "❌ Staff member not found.",
                 ephemeral: true
             });
         }
 
-        // STAFF LIST
+        await client.staffDB.deleteOne({
+            guildId: interaction.guild.id,
+            userId: user.id
+        });
 
-        if (interaction.commandName === "stafflist") {
+        return interaction.reply({
+            content: `✅ Removed **${user.tag}** from staff.`,
+            ephemeral: true
+        });
+    }
 
-            const staff = await client.staffDB.find({
-                guildId: interaction.guild.id
-            }).toArray();
+    // =========================
+    // STAFF LIST
+    // =========================
 
-            const management =
-                staff
+    if (interaction.commandName === "stafflist") {
+
+        const staff = await client.staffDB.find({
+            guildId: interaction.guild.id
+        }).toArray();
+
+        const management =
+            staff
                 .filter(x => x.category === "Management")
                 .map(x => `• <@${x.userId}>`)
                 .join("\n") || "None";
 
-            const moderators =
-                staff
+        const moderators =
+            staff
                 .filter(x => x.category === "Moderators")
                 .map(x => `• <@${x.userId}>`)
                 .join("\n") || "None";
 
-            const staffTeam =
-                staff
+        const staffTeam =
+            staff
                 .filter(x => x.category === "Staff")
                 .map(x => `• <@${x.userId}>`)
                 .join("\n") || "None";
 
-            const embed = new EmbedBuilder()
-                .setTitle("📋 Infinity Staff Team")
-                .setColor(0x0B3D91)
-                .addFields(
-                    {
-                        name: "👑 Management",
-                        value: management
-                    },
-                    {
-                        name: "🛡️ Moderators",
-                        value: moderators
-                    },
-                    {
-                        name: "✨ Staff",
-                        value: staffTeam
-                    }
-                );
+        const embed = new EmbedBuilder()
+            .setTitle("📋 Infinity Staff Team")
+            .setColor(0x0B3D91)
+            .addFields(
+                {
+                    name: "👑 Management",
+                    value: management
+                },
+                {
+                    name: "🛡️ Moderators",
+                    value: moderators
+                },
+                {
+                    name: "✨ Staff",
+                    value: staffTeam
+                }
+            );
 
+        return interaction.reply({
+            embeds: [embed]
+        });
+    }
+
+    // =========================
+    // STAFF STATS
+    // =========================
+
+    if (interaction.commandName === "staffstats") {
+
+        const user =
+            interaction.options.getUser("user") ||
+            interaction.user;
+
+        const staff = await client.staffDB.findOne({
+            guildId: interaction.guild.id,
+            userId: user.id
+        });
+
+        if (!staff) {
             return interaction.reply({
-                embeds: [embed]
+                content: "❌ Staff member not found.",
+                ephemeral: true
             });
         }
 
-        // STAFF STATS
+        const embed = new EmbedBuilder()
+            .setTitle(`📊 ${user.tag}`)
+            .setColor(0x0B3D91)
+            .addFields(
+                {
+                    name: "Category",
+                    value: staff.category,
+                    inline: true
+                },
+                {
+                    name: "Messages",
+                    value: String(staff.messagesSent || 0),
+                    inline: true
+                },
+                {
+                    name: "Activity Score",
+                    value: String(staff.activityScore || 0),
+                    inline: true
+                },
+                {
+                    name: "Last Active",
+                    value: staff.lastActiveAt
+                        ? `<t:${Math.floor(new Date(staff.lastActiveAt).getTime() / 1000)}:R>`
+                        : "Never"
+                },
+                {
+                    name: "Joined Staff",
+                    value: `<t:${Math.floor(new Date(staff.joinedAt).getTime() / 1000)}:F>`
+                }
+            );
 
-        if (interaction.commandName === "staffstats") {
+        return interaction.reply({
+            embeds: [embed]
+        });
+    }
 
-            const user =
-                interaction.options.getUser("user") ||
-                interaction.user;
+    // =========================
+    // STAFF PROFILE
+    // =========================
 
-            const staff = await client.staffDB.findOne({
-                guildId: interaction.guild.id,
-                userId: user.id
+    if (interaction.commandName === "staffprofile") {
+
+        const user =
+            interaction.options.getUser("user") ||
+            interaction.user;
+
+        const staff = await client.staffDB.findOne({
+            guildId: interaction.guild.id,
+            userId: user.id
+        });
+
+        if (!staff) {
+            return interaction.reply({
+                content: "❌ Staff member not found.",
+                ephemeral: true
             });
+        }
 
-            if (!staff) {
-                return interaction.reply({
-                    content: "❌ Staff member not found.",
-                    ephemeral: true
-                });
+        let status = "🔴 Inactive";
+
+        if (staff.lastActiveAt) {
+
+            const diff =
+                Date.now() -
+                new Date(staff.lastActiveAt).getTime();
+
+            if (diff < 86400000)
+                status = "🟢 Active";
+            else if (diff < 604800000)
+                status = "🟡 Semi Active";
+        }
+
+        const embed = new EmbedBuilder()
+            .setTitle(`👤 ${user.tag}`)
+            .setThumbnail(user.displayAvatarURL())
+            .setColor(0x0B3D91)
+            .addFields(
+                {
+                    name: "Category",
+                    value: staff.category,
+                    inline: true
+                },
+                {
+                    name: "Status",
+                    value: status,
+                    inline: true
+                },
+                {
+                    name: "Messages",
+                    value: String(staff.messagesSent || 0),
+                    inline: true
+                },
+                {
+                    name: "Activity Score",
+                    value: String(staff.activityScore || 0)
+                },
+                {
+                    name: "Last Message",
+                    value: staff.lastMessageAt
+                        ? `<t:${Math.floor(new Date(staff.lastMessageAt).getTime() / 1000)}:R>`
+                        : "Never"
+                },
+                {
+                    name: "Joined Staff",
+                    value: `<t:${Math.floor(new Date(staff.joinedAt).getTime() / 1000)}:F>`
+                }
+            );
+
+        return interaction.reply({
+            embeds: [embed]
+        });
+    }
+
+    // =========================
+    // STAFF ACTIVITY
+    // =========================
+
+    if (interaction.commandName === "staffactivity") {
+
+        const staff = await client.staffDB.find({
+            guildId: interaction.guild.id
+        }).toArray();
+
+        const active = [];
+        const semi = [];
+        const inactive = [];
+
+        for (const s of staff) {
+
+            if (!s.lastActiveAt) {
+                inactive.push(`<@${s.userId}>`);
+                continue;
             }
 
-            const embed = new EmbedBuilder()
-                .setTitle(`📊 ${user.tag}`)
-                .setColor(0x0B3D91)
-                .addFields(
-                    {
-                        name: "Category",
-                        value: staff.category,
-                        inline: true
-                    },
-                    {
-                        name: "Messages",
-                        value: String(staff.messagesSent || 0),
-                        inline: true
-                    },
-                    {
-                        name: "Warnings",
-                        value: String(staff.warningsIssued || 0),
-                        inline: true
-                    }
-                );
+            const diff =
+                Date.now() -
+                new Date(s.lastActiveAt).getTime();
 
-            return interaction.reply({
-                embeds: [embed]
-            });
+            if (diff < 86400000)
+                active.push(`<@${s.userId}>`);
+
+            else if (diff < 604800000)
+                semi.push(`<@${s.userId}>`);
+
+            else
+                inactive.push(`<@${s.userId}>`);
         }
 
-        // LEADERBOARD
+        const embed = new EmbedBuilder()
+            .setTitle("📈 Staff Activity")
+            .setColor(0x0B3D91)
+            .addFields(
+                {
+                    name: "🟢 Active",
+                    value: active.join("\n") || "None"
+                },
+                {
+                    name: "🟡 Semi Active",
+                    value: semi.join("\n") || "None"
+                },
+                {
+                    name: "🔴 Inactive",
+                    value: inactive.join("\n") || "None"
+                }
+            );
 
-        if (interaction.commandName === "staffleaderboard") {
+        return interaction.reply({
+            embeds: [embed]
+        });
+    }
 
-            const staff = await client.staffDB.find({
-                guildId: interaction.guild.id
-            }).toArray();
+    // =========================
+    // STAFF LEADERBOARD
+    // =========================
 
-            const sorted =
-                staff.sort(
-                    (a, b) =>
-                    (b.messagesSent || 0) -
-                    (a.messagesSent || 0)
-                );
+    if (interaction.commandName === "staffleaderboard") {
 
-            const leaderboard =
-                sorted
+        const category =
+            interaction.options.getString("category") || "all";
+
+        let query = {
+            guildId: interaction.guild.id
+        };
+
+        if (category !== "all") {
+            query.category = category;
+        }
+
+        const staff = await client.staffDB.find(query).toArray();
+
+        const sorted = staff.sort(
+            (a, b) =>
+                (b.activityScore || 0) -
+                (a.activityScore || 0)
+        );
+
+        const leaderboard =
+            sorted
                 .slice(0, 10)
-                .map(
-                    (s, i) =>
-                    `#${i + 1} <@${s.userId}> • ${s.messagesSent || 0} messages`
-                )
-                .join("\n");
+                .map((s, i) => {
 
-            const embed = new EmbedBuilder()
-                .setTitle("🏆 Staff Leaderboard")
-                .setColor(0x0B3D91)
-                .setDescription(
-                    leaderboard || "No staff members found."
-                );
+                    const lastActive =
+                        s.lastActiveAt
+                            ? `<t:${Math.floor(new Date(s.lastActiveAt).getTime() / 1000)}:R>`
+                            : "Never";
 
-            return interaction.reply({
-                embeds: [embed]
-            });
-        }
+                    return `#${i + 1} <@${s.userId}>
+```
 
-    });
+Category: ${s.category}
+Score: ${s.activityScore || 0}
+Last Active: ${lastActive}`;
+})
+.join("\n\n");
+
+```
+        const embed = new EmbedBuilder()
+            .setTitle("🏆 Staff Leaderboard")
+            .setColor(0x0B3D91)
+            .setDescription(
+                leaderboard || "No staff members found."
+            );
+
+        return interaction.reply({
+            embeds: [embed]
+        });
+    }
+
+});
+```
 
 };
