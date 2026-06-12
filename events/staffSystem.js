@@ -107,7 +107,7 @@ module.exports = (client) => {
                 .join("\n") || "None";
 
             const embed = new EmbedBuilder()
-                .setTitle("📋 Infinity Sky Staff Team")
+                .setTitle("📋 Infinity Staff Team")
                 .setColor(0x0B3D91)
                 .addFields(
                     {
