@@ -186,51 +186,56 @@ new SlashCommandBuilder()
   ];
 
 new SlashCommandBuilder()
-  .setName("addstaff")
-  .setDescription("Add a staff member")
-  .addUserOption(option =>
-      option.setName("user")
-      .setDescription("Staff member")
-      .setRequired(true)
-  )
-  .addStringOption(option =>
-      option.setName("category")
-      .setDescription("Staff category")
-      .setRequired(true)
-      .addChoices(
-          { name: "Management", value: "Management" },
-          { name: "Moderators", value: "Moderators" },
-          { name: "Staff", value: "Staff" }
-      )
-  )
-  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+.setName("addstaff")
+.setDescription("Add a staff member")
+.addUserOption(option =>
+    option.setName("user")
+    .setDescription("Staff member")
+    .setRequired(true)
+)
+.addStringOption(option =>
+    option.setName("category")
+    .setDescription("Staff category")
+    .setRequired(true)
+    .addChoices(
+        { name: "Management", value: "Management" },
+        { name: "Moderators", value: "Moderators" },
+        { name: "Staff", value: "Staff" }
+    )
+)
+.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
 new SlashCommandBuilder()
-  .setName("removestaff")
-  .setDescription("Remove a staff member")
-  .addUserOption(option =>
-      option.setName("user")
-      .setDescription("Staff member")
-      .setRequired(true)
-  )
-  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+.setName("removestaff")
+.setDescription("Remove a staff member")
+.addUserOption(option =>
+    option.setName("user")
+    .setDescription("Staff member")
+    .setRequired(true)
+)
+.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
 new SlashCommandBuilder()
-  .setName("stafflist")
-  .setDescription("View all staff"),
+.setName("stafflist")
+.setDescription("View all staff")
+.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
 new SlashCommandBuilder()
-  .setName("staffstats")
-  .setDescription("View staff stats")
-  .addUserOption(option =>
-      option.setName("user")
-      .setDescription("Staff member")
-      .setRequired(true)
-  ),
+.setName("staffstats")
+.setDescription("View staff statistics")
+.addUserOption(option =>
+    option.setName("user")
+    .setDescription("Staff member")
+    .setRequired(false)
+)
+.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
 new SlashCommandBuilder()
-  .setName("staffleaderboard")
-  .setDescription("View staff leaderboard")
+.setName("staffleaderboard")
+.setDescription("View staff leaderboard")
+.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+
+];
   
   await client.application.commands.set(slashCommands);
 
