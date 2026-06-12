@@ -216,7 +216,7 @@ new SlashCommandBuilder()
 
 new SlashCommandBuilder()
 .setName("stafflist")
-.setDescription("View all staff")
+.setDescription("View all registered staff")
 .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
 new SlashCommandBuilder()
@@ -230,10 +230,35 @@ new SlashCommandBuilder()
 .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
 new SlashCommandBuilder()
-.setName("staffleaderboard")
-.setDescription("View staff leaderboard")
-.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+.setName("staffprofile")
+.setDescription("View a detailed staff profile")
+.addUserOption(option =>
+    option.setName("user")
+    .setDescription("Staff member")
+    .setRequired(false)
+)
+.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
+new SlashCommandBuilder()
+.setName("staffactivity")
+.setDescription("View staff activity status")
+.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+
+new SlashCommandBuilder()
+.setName("staffleaderboard")
+.setDescription("View the staff activity leaderboard")
+.addStringOption(option =>
+    option.setName("category")
+    .setDescription("Filter by category")
+    .setRequired(false)
+    .addChoices(
+        { name: "All", value: "all" },
+        { name: "Management", value: "Management" },
+        { name: "Moderators", value: "Moderators" },
+        { name: "Staff", value: "Staff" }
+    )
+)
+.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 ];
   
   await client.application.commands.set(slashCommands);
