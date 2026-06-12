@@ -445,6 +445,3 @@ Last Active: ${lastActive}`;
 });
 
 };
-
-
-};
