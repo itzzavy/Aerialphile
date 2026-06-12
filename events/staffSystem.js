@@ -432,7 +432,6 @@ Last Active: ${lastActive}`;
 })
 .join("\n\n");
 
-```
         const embed = new EmbedBuilder()
             .setTitle("🏆 Staff Leaderboard")
             .setColor(0x0B3D91)
@@ -446,6 +445,8 @@ Last Active: ${lastActive}`;
     }
 
 });
-```
+
+};
+
 
 };
