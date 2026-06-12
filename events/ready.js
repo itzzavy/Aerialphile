@@ -185,6 +185,53 @@ new SlashCommandBuilder()
   .setDescription("View all saved birthdays")
   ];
 
+new SlashCommandBuilder()
+  .setName("addstaff")
+  .setDescription("Add a staff member")
+  .addUserOption(option =>
+      option.setName("user")
+      .setDescription("Staff member")
+      .setRequired(true)
+  )
+  .addStringOption(option =>
+      option.setName("category")
+      .setDescription("Staff category")
+      .setRequired(true)
+      .addChoices(
+          { name: "Management", value: "Management" },
+          { name: "Moderators", value: "Moderators" },
+          { name: "Staff", value: "Staff" }
+      )
+  )
+  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+
+new SlashCommandBuilder()
+  .setName("removestaff")
+  .setDescription("Remove a staff member")
+  .addUserOption(option =>
+      option.setName("user")
+      .setDescription("Staff member")
+      .setRequired(true)
+  )
+  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+
+new SlashCommandBuilder()
+  .setName("stafflist")
+  .setDescription("View all staff"),
+
+new SlashCommandBuilder()
+  .setName("staffstats")
+  .setDescription("View staff stats")
+  .addUserOption(option =>
+      option.setName("user")
+      .setDescription("Staff member")
+      .setRequired(true)
+  ),
+
+new SlashCommandBuilder()
+  .setName("staffleaderboard")
+  .setDescription("View staff leaderboard")
+  
   await client.application.commands.set(slashCommands);
 
 });
