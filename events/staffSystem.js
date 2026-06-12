@@ -5,7 +5,6 @@ PermissionFlagsBits
 
 module.exports = (client) => {
 
-```
 // =========================
 // MESSAGE TRACKING
 // =========================
@@ -424,7 +423,6 @@ client.on("interactionCreate", async (interaction) => {
                             : "Never";
 
                     return `#${i + 1} <@${s.userId}>
-```
 
 Category: ${s.category}
 Score: ${s.activityScore || 0}
