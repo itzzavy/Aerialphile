@@ -96,13 +96,6 @@ module.exports = (client) => {
                 c => c.topic === interaction.user.id
             );
 
-            if (existing) {
-                return interaction.reply({
-                    content: `❌ You already have an open ticket: ${existing}`,
-                    ephemeral: true
-                });
-            }
-
             const channel = await interaction.guild.channels.create({
                 name: ticketName,
                 type: ChannelType.GuildText,
