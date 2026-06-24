@@ -22,5 +22,6 @@ require("./events/channelAccessSystem")(client);
 require("./events/commandLogger")(client);
 require("./events/birthdaySystem")(client);
 require("./events/staffSystem")(client);
+require('./events/ticketSystem')(client);
 
 client.login(process.env.TOKEN);
