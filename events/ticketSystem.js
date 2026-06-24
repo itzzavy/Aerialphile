@@ -9,7 +9,10 @@ const {
 } = require('discord.js');
 
 module.exports = (client) => {
-    if (interaction.isChatInputCommand()) {
+
+    client.on('interactionCreate', async interaction => {
+
+          if (interaction.isChatInputCommand()) {
 
     if (interaction.commandName !== 'ticketpanel') return;
 
@@ -21,7 +24,7 @@ module.exports = (client) => {
 
 🎫 General Support
 🏆 Giveaway & Reward Claims
-🎥 Streamer Support
+🎥 Streamer
 
 ✅ We're here to help and ensure a fair and enjoyable experience for all participants.
         `);
@@ -43,7 +46,7 @@ module.exports = (client) => {
                 emoji: '🏆'
             },
             {
-                label: 'Streamer Support',
+                label: 'Streamer',
                 description: 'Apply for streamer access',
                 value: 'streamer',
                 emoji: '🎥'
@@ -57,8 +60,6 @@ module.exports = (client) => {
         components: [row]
     });
 }
-
-    client.on('interactionCreate', async interaction => {
 
         if (interaction.isStringSelectMenu()) {
 
