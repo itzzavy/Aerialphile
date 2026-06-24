@@ -105,45 +105,6 @@ client.on("interactionCreate", async interaction => {
 
   }
 
-  if (interaction.commandName === "ticketpanel") {
-
-    const embed = new EmbedBuilder()
-        .setColor("#0099ff")
-        .setTitle("Support Center")
-        .setDescription(`
-🎫 General Support
-🏆 Giveaway & Reward Claims
-🎥 Streamer
-        `);
-
-    const menu = new StringSelectMenuBuilder()
-        .setCustomId("ticket_menu")
-        .setPlaceholder("Make a selection")
-        .addOptions(
-            {
-                label: "General Support",
-                value: "general",
-                description: "Ask questions and receive assistance"
-            },
-            {
-                label: "Giveaway & Reward Claims",
-                value: "giveaway",
-                description: "Claim rewards and prizes"
-            },
-            {
-                label: "Streamer",
-                value: "Get a Streamer Role",
-                description: "Apply for Streamer access"
-            }
-        );
-
-    const row = new ActionRowBuilder().addComponents(menu);
-
-    return interaction.reply({
-        embeds: [embed],
-        components: [row]
-    });
-}
 
 });
 

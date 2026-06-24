@@ -9,6 +9,54 @@ const {
 } = require('discord.js');
 
 module.exports = (client) => {
+    if (interaction.isChatInputCommand()) {
+
+    if (interaction.commandName !== 'ticketpanel') return;
+
+    const embed = new EmbedBuilder()
+        .setColor('#0099ff')
+        .setTitle('Support Center')
+        .setDescription(`
+➤ Have questions or need assistance? Open a ticket for:
+
+🎫 General Support
+🏆 Giveaway & Reward Claims
+🎥 Streamer Support
+
+✅ We're here to help and ensure a fair and enjoyable experience for all participants.
+        `);
+
+    const menu = new StringSelectMenuBuilder()
+        .setCustomId('ticket_menu')
+        .setPlaceholder('Make a selection')
+        .addOptions(
+            {
+                label: 'General Support',
+                description: 'Ask questions and receive assistance',
+                value: 'general',
+                emoji: '🎫'
+            },
+            {
+                label: 'Giveaway & Reward Claims',
+                description: 'Claim giveaway rewards and prizes',
+                value: 'giveaway',
+                emoji: '🏆'
+            },
+            {
+                label: 'Streamer Support',
+                description: 'Apply for streamer access',
+                value: 'streamer',
+                emoji: '🎥'
+            }
+        );
+
+    const row = new ActionRowBuilder().addComponents(menu);
+
+    return interaction.reply({
+        embeds: [embed],
+        components: [row]
+    });
+}
 
     client.on('interactionCreate', async interaction => {
 
