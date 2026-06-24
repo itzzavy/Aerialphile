@@ -526,11 +526,11 @@ new SlashCommandBuilder()
     .setName("ticketpanel")
     .setDescription("Send the support ticket panel")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-  
+
+];
+    
   await client.application.commands.set(slashCommands);
     
-];
-
 });
 
 >>>>>>> 372e981700b698b737ba6f86d78ad2389d362e9f
