@@ -216,9 +216,8 @@ module.exports = (client) => {
 
       new SlashCommandBuilder()
         .setName("stafflist")
-        .setDescription("View all registered staff")
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-
+        .setDescription("View all registered staff"),
+       
       new SlashCommandBuilder()
         .setName("staffstats")
         .setDescription("View staff statistics")
@@ -226,9 +225,8 @@ module.exports = (client) => {
           option.setName("user")
             .setDescription("Staff member")
             .setRequired(false)
-        )
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-
+        ),
+        
       new SlashCommandBuilder()
         .setName("staffprofile")
         .setDescription("View a detailed staff profile")
@@ -236,13 +234,13 @@ module.exports = (client) => {
           option.setName("user")
             .setDescription("Staff member")
             .setRequired(false)
-        )
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+        ),
+      
 
       new SlashCommandBuilder()
         .setName("staffactivity")
-        .setDescription("View staff activity status")
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+        .setDescription("View staff activity status"),
+    
 
       new SlashCommandBuilder()
         .setName("staffleaderboard")
@@ -257,8 +255,8 @@ module.exports = (client) => {
               { name: "Moderators", value: "Moderators" },
               { name: "Staff", value: "Staff" }
             )
-        )
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+        ),
+      
     
 
        new SlashCommandBuilder()
