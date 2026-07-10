@@ -3,6 +3,11 @@ EmbedBuilder,
 PermissionFlagsBits
 } = require("discord.js");
 
+// 🔹 WHITELIST ROLE IDS (for staff activity & leaderboard)
+const STAFF_VIEW_WHITELIST_ROLES = [
+    "1525090493732749432", // staff activity access
+];
+
 module.exports = (client) => {
 
 // =========================
@@ -59,12 +64,47 @@ client.on("interactionCreate", async (interaction) => {
 
     if (!commands.includes(interaction.commandName)) return;
 
+   // =========================
+// PERMISSION CHECKS
+// =========================
+
+const adminOnly = [
+    "addstaff",
+    "removestaff"
+];
+
+const whitelistOnly = [
+    "staffactivity",
+    "staffleaderboard",
+    "stafflist",
+    "staffstats",
+    "staffprofile"
+];
+
+if (adminOnly.includes(interaction.commandName)) {
     if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
         return interaction.reply({
             content: "❌ Only administrators can use this command.",
             ephemeral: true
         });
     }
+}
+
+if (whitelistOnly.includes(interaction.commandName)) {
+    const hasRole = STAFF_VIEW_WHITELIST_ROLES.some(roleId =>
+        interaction.member.roles.cache.has(roleId)
+    );
+
+    if (
+        !hasRole &&
+        !interaction.member.permissions.has(PermissionFlagsBits.Administrator)
+    ) {
+        return interaction.reply({
+            content: "❌ You don't have permission to use this command.",
+            ephemeral: true
+        });
+    }
+}
 
     // =========================
     // ADD STAFF
