@@ -265,6 +265,25 @@ module.exports = (client) => {
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     ];
 
+    new SlashCommandBuilder()
+  .setName("transcript")
+  .setDescription("Generate an HTML transcript of a channel")
+  .addChannelOption(option =>
+    option
+      .setName("channel")
+      .setDescription("Channel to create transcript from")
+      .setRequired(false)
+  )
+  .addIntegerOption(option =>
+    option
+      .setName("limit")
+      .setDescription("Number of messages (1-1000)")
+      .setMinValue(1)
+      .setMaxValue(1000)
+      .setRequired(false)
+  )
+  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+
     await client.application.commands.set(slashCommands);
 
   });
