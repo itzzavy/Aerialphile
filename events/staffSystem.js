@@ -18,11 +18,11 @@ const STAFF_VIEW_WHITELIST_ROLES = [
 // Category → visual identity. Add more categories here and everything
 // (embeds, colors, emojis) picks it up automatically.
 const CATEGORY_META = {
-  Management: { emoji: "👑", color: 0xffd700 },
-  Moderators: { emoji: "🛡️", color: 0x5865f2 },
-  Staff: { emoji: "✨", color: 0x57f287 },
+  Management: { emoji: "👑", color: 0x87ceeb },
+  Moderators: { emoji: "🛡️", color: 0x87ceeb },
+  Staff: { emoji: "✨", color: 0x87ceeb },
 };
-const DEFAULT_META = { emoji: "📌", color: 0x0b3d91 };
+const DEFAULT_META = { emoji: "📌", color: 0x87ceeb };
 
 function meta(category) {
   return CATEGORY_META[category] || DEFAULT_META;
@@ -134,7 +134,7 @@ function buildLeaderboardEmbed(guild, sorted, page, category) {
 
   const embed = baseEmbed(guild)
     .setTitle("🏆 Staff Leaderboard")
-    .setColor(0xffd700)
+    .setColor(0x87ceeb)
     .setDescription(description)
     .setFooter({
       text: `${guild.name} • Page ${clampedPage + 1}/${totalPages} • ${sorted.length} staff${
@@ -403,7 +403,7 @@ module.exports = (client) => {
 
         const embed = baseEmbed(interaction.guild)
           .setTitle("📋 Infinity Staff Team")
-          .setColor(0x0b3d91)
+          .setColor(0x87ceeb)
           .setThumbnail(interaction.guild.iconURL({ extension: "png" }) ?? null)
           .addFields(fields)
           .setDescription(`**${staff.length}** total staff members. Use \`/staffstats\` or \`/staffprofile\` for details.`);
@@ -513,7 +513,7 @@ module.exports = (client) => {
         const total = staff.length || 1;
         const embed = baseEmbed(interaction.guild)
           .setTitle("📈 Staff Activity Overview")
-          .setColor(0x0b3d91)
+          .setColor(0x87ceeb)
           .setDescription(
             `🟢 **${active.length}** active • 🟡 **${semi.length}** semi-active • 🔴 **${inactive.length}** inactive\n` +
               progressBar(active.length, total, 20)
