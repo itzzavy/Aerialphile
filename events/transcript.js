@@ -9,7 +9,7 @@ const {
 const MAX_MSGS = 1000;
 
 // Put the role ID that (besides Administrators) is allowed to run this command.
-const ALLOWED_ROLE_ID = "PUT_ROLE_ID_HERE";
+const ALLOWED_ROLE_ID = "1479882366863282389";
 
 const PAGE_CSS = `
 body { background: #2b2d31; color: #d3d6db; font-family: Helvetica, Arial, sans-serif; padding: 18px; }
