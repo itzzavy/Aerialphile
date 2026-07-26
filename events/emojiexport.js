@@ -1,7 +1,7 @@
 const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 
 // Only this user can run /exportemojis — not admins, not anyone else.
-const OWNER_ID = "PUT_YOUR_USER_ID_HERE";
+const OWNER_ID = "1279482102777385063";
 
 module.exports = (client) => {
   client.on("interactionCreate", async (interaction) => {
