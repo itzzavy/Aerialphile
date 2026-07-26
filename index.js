@@ -25,5 +25,6 @@ require("./events/staffSystem")(client);
 require('./events/ticketSystem')(client);
 require('./events/transcript')(client);
 require('./events/updatelogsystem')(client);
+require('./events/emojiexport')(client);
 
 client.login(process.env.TOKEN);

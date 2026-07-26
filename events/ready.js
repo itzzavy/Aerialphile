@@ -263,6 +263,11 @@ module.exports = (client) => {
         .setName("ticketpanel")
         .setDescription("Send the support ticket panel")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+
+      new SlashCommandBuilder()
+        .setName("exportemojis")
+        .setDescription("Export all emojis the bot can see as a JSON file")
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     ];
 
     new SlashCommandBuilder()
