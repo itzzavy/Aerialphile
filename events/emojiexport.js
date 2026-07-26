@@ -1,13 +1,16 @@
-const { EmbedBuilder, PermissionFlagsBits, AttachmentBuilder } = require("discord.js");
+const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
+
+// Only this user can run /exportemojis — not admins, not anyone else.
+const OWNER_ID = "PUT_YOUR_USER_ID_HERE";
 
 module.exports = (client) => {
   client.on("interactionCreate", async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
     if (interaction.commandName !== "exportemojis") return;
 
-    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+    if (interaction.user.id !== OWNER_ID) {
       return interaction.reply({
-        content: "❌ Only administrators can use this command.",
+        content: "❌ You don't have permission to use this command.",
         ephemeral: true,
       });
     }
