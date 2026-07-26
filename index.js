@@ -24,5 +24,6 @@ require("./events/birthdaySystem")(client);
 require("./events/staffSystem")(client);
 require('./events/ticketSystem')(client);
 require('./events/transcript')(client);
+require('./events/updatelogsystem')(client);
 
 client.login(process.env.TOKEN);
