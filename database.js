@@ -14,6 +14,7 @@ module.exports = async (client) => {
   client.reactDB = db.collection("emiireact");
   client.birthdayDB = db.collection("birthdays");
   client.staffDB = db.collection("staff");
+  client.updateStateDB = db.collection("updateState");
 
   console.log("Connected to MongoDB");
 
