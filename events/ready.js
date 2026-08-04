@@ -289,6 +289,25 @@ module.exports = (client) => {
   )
   .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
+  new SlashCommandBuilder()
+  .setName("setsticky")
+  .setDescription("Set or update the sticky message for a channel")
+  .addStringOption(option =>
+    option.setName("message").setDescription("The sticky message text").setRequired(true)
+  )
+  .addChannelOption(option =>
+    option.setName("channel").setDescription("Channel (defaults to current)").setRequired(false)
+  )
+  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+
+new SlashCommandBuilder()
+  .setName("removesticky")
+  .setDescription("Remove the sticky message from a channel")
+  .addChannelOption(option =>
+    option.setName("channel").setDescription("Channel (defaults to current)").setRequired(false)
+  )
+  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+
     await client.application.commands.set(slashCommands);
 
   });

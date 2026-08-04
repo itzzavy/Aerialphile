@@ -15,6 +15,7 @@ module.exports = async (client) => {
   client.birthdayDB = db.collection("birthdays");
   client.staffDB = db.collection("staff");
   client.updateStateDB = db.collection("updateState");
+  client.stickyDB = db.collection("sticky");
 
   console.log("Connected to MongoDB");
 
