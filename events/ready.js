@@ -268,47 +268,47 @@ module.exports = (client) => {
         .setName("exportemojis")
         .setDescription("Export all emojis the bot can see as a JSON file")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+      new SlashCommandBuilder()
+        .setName("transcript")
+        .setDescription("Generate an HTML transcript of a channel")
+        .addChannelOption(option =>
+          option
+            .setName("channel")
+            .setDescription("Channel to create transcript from")
+            .setRequired(false)
+        )
+        .addIntegerOption(option =>
+          option
+            .setName("limit")
+            .setDescription("Number of messages (1-1000)")
+            .setMinValue(1)
+            .setMaxValue(1000)
+            .setRequired(false)
+        )
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+
+      new SlashCommandBuilder()
+        .setName("setsticky")
+        .setDescription("Set or update the sticky message for a channel")
+        .addStringOption(option =>
+          option.setName("message").setDescription("The sticky message text").setRequired(true)
+        )
+        .addChannelOption(option =>
+          option.setName("channel").setDescription("Channel (defaults to current)").setRequired(false)
+        )
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+
+      new SlashCommandBuilder()
+        .setName("removesticky")
+        .setDescription("Remove the sticky message from a channel")
+        .addChannelOption(option =>
+          option.setName("channel").setDescription("Channel (defaults to current)").setRequired(false)
+        )
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     ];
 
-    new SlashCommandBuilder()
-  .setName("transcript")
-  .setDescription("Generate an HTML transcript of a channel")
-  .addChannelOption(option =>
-    option
-      .setName("channel")
-      .setDescription("Channel to create transcript from")
-      .setRequired(false)
-  )
-  .addIntegerOption(option =>
-    option
-      .setName("limit")
-      .setDescription("Number of messages (1-1000)")
-      .setMinValue(1)
-      .setMaxValue(1000)
-      .setRequired(false)
-  )
-  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
-  new SlashCommandBuilder()
-  .setName("setsticky")
-  .setDescription("Set or update the sticky message for a channel")
-  .addStringOption(option =>
-    option.setName("message").setDescription("The sticky message text").setRequired(true)
-  )
-  .addChannelOption(option =>
-    option.setName("channel").setDescription("Channel (defaults to current)").setRequired(false)
-  )
-  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-
-new SlashCommandBuilder()
-  .setName("removesticky")
-  .setDescription("Remove the sticky message from a channel")
-  .addChannelOption(option =>
-    option.setName("channel").setDescription("Channel (defaults to current)").setRequired(false)
-  )
-  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-
-    await client.application.commands.set(slashCommands);
+  await client.application.commands.set(slashCommands);
 
   });
 
